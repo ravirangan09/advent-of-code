@@ -47,7 +47,7 @@ for (let i = 0; i < lines.length; i++) {
           if (isNumber(prevLine[pos - 1])) {
             let number = collectNumber(prevLine, pos - 1);
             n_a.push(number);
-          }
+          } //NO ELSE; it has to flow below
           if (isNumber(prevLine[pos + 1])) {
             let number = collectNumber(prevLine, pos + 1);
             n_a.push(number);
@@ -62,7 +62,7 @@ for (let i = 0; i < lines.length; i++) {
           if (isNumber(nextLine[pos - 1])) {
             let number = collectNumber(nextLine, pos - 1);
             n_a.push(number);
-          }
+          } //NO ELSE; it has to flow below
           if (isNumber(nextLine[pos + 1])) {
             let number = collectNumber(nextLine, pos + 1);
             n_a.push(number);
