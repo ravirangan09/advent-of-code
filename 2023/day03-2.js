@@ -4,8 +4,6 @@ const data = fs.readFileSync("day03-1-input.txt", "utf-8");
 const lines = data.split("\n");
 let sum = 0;
 const isNumber = (c) => c >= "0" && c <= "9";
-const isNumberOrDot = (c) => c == "." || isNumber(c);
-const isSymbol = (c) => c && !isNumberOrDot(c);
 const isGear = (c) => c == "*";
 const collectNumber = (line, pos) => {
   let number = parseInt(line[pos]);
