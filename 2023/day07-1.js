@@ -57,6 +57,5 @@ sb.sort((a, b) => {
     return a.type - b.type;
   }
 });
-console.log(sb.slice(900));
 const score = sb.reduce((a, v, i) => a + v.score * (i + 1), 0);
 console.log(score);
