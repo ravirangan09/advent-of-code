@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const data = fs.readFileSync("day07-1-input-sample.txt", "utf-8");
+const data = fs.readFileSync("day07-1-input.txt", "utf-8");
 const lines = data.split("\n").map((l) => l.split(" "));
 const card_names = [
   "J",
@@ -19,10 +19,67 @@ const card_names = [
 ];
 const sb = []; //scoreboard
 for (const l of lines) {
-  const d = l[0].split(""); //convert to array
-  m = new Map();
-  for (const v of d) m.set(v, m.has(v) ? m.get(v) + 1 : 1);
-  //determine type first
+  const m = new Map();
+  for (const v of l[0]) m.set(v, m.has(v) ? m.get(v) + 1 : 1);
+
+  //convert J's first
+  let new_str = l[0].slice();
+  if (new_str.includes("J")) {
+    const values = Array.from(m.values());
+    const keys = Array.from(m.keys());
+    const sorted_keys = [...keys].sort(
+      (a, b) => card_names.indexOf(b) - card_names.indexOf(a)
+    );
+    //has joker
+    switch (
+      m.size //unique characters
+    ) {
+      case 1:
+        new_str = new_str.replaceAll("J", "A"); //make it highest
+        break;
+      case 2:
+        new_str = new_str.replaceAll("J", sorted_keys[0]);
+        break;
+      case 3: {
+        const pos = values.indexOf(3);
+        if (pos >= 0) {
+          if (keys[pos] == "J")
+            new_str = new_str.replaceAll("J", sorted_keys[0]);
+          else {
+            new_str = new_str.replaceAll("J", keys[pos]);
+          }
+        } else {
+          const pos = values.indexOf(1);
+          if (keys[pos] == "J")
+            new_str = new_str.replaceAll("J", sorted_keys[0]);
+          else {
+            //there are two Js. make it same as the other char havingtwo occurences
+            for (let i = 0; i < 3; i++) {
+              if (values[i] == 2 && keys[i] != "J") {
+                new_str = new_str.replaceAll("J", keys[i]);
+                break;
+              }
+            }
+          }
+        }
+        break;
+      }
+      case 4: {
+        const pos = values.indexOf(2);
+        if (keys[pos] == "J") new_str = new_str.replaceAll("J", sorted_keys[0]);
+        else {
+          new_str = new_str.replaceAll("J", keys[pos]);
+        }
+        break;
+      }
+      case 5:
+        new_str = new_str.replaceAll("J", sorted_keys[0]);
+        break;
+    }
+    //clear map and recalculate counts
+    m.clear();
+    for (const v of new_str) m.set(v, m.has(v) ? m.get(v) + 1 : 1);
+  }
   const values = Array.from(m.values());
   let t = 0;
   switch (
@@ -44,7 +101,7 @@ for (const l of lines) {
       t = 1;
       break;
   }
-  sb.push({ cards: l[0], score: parseInt(l[1]), type: t });
+  sb.push({ cards: l[0], new_str, score: parseInt(l[1]), type: t });
 }
 sb.sort((a, b) => {
   if (a.type == b.type) {
@@ -57,6 +114,5 @@ sb.sort((a, b) => {
     return a.type - b.type;
   }
 });
-console.log(sb.slice(900));
 const score = sb.reduce((a, v, i) => a + v.score * (i + 1), 0);
 console.log(score);

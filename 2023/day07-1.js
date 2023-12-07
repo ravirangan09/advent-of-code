@@ -19,9 +19,8 @@ const card_names = [
 ];
 const sb = []; //scoreboard
 for (const l of lines) {
-  const d = l[0].split(""); //convert to array
   m = new Map();
-  for (const v of d) m.set(v, m.has(v) ? m.get(v) + 1 : 1);
+  for (const v of l[0]) m.set(v, m.has(v) ? m.get(v) + 1 : 1);
   //determine type first
   const values = Array.from(m.values());
   let t = 0;
