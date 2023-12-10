@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "compute-lcm": "^1.1.2"
+    "compute-lcm": "^1.1.2",
+    "point-in-polygon-hao": "^1.1.0"
   }
 }
