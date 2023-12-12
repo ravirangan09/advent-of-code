@@ -37,7 +37,7 @@ for (let r = 0; r < lines.length; r++) {
 
 const gcount = pos_a.length;
 let sum = 0;
-for (let i = 0; i < gcount; i++) {
+for (let i = 0; i < gcount - 1; i++) {
   for (let j = i + 1; j < gcount; j++) {
     //compare i and j
     sum +=
