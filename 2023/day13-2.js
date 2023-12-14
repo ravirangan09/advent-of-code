@@ -65,7 +65,6 @@ let sum = 0;
 for (const g of grids) {
   const left_count = getVertMirror(g);
   const top_count = getHorizMirror(g);
-  console.log(left_count, top_count);
   sum += top_count * 100 + left_count;
 }
 
