@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const data = fs.readFileSync("day12-1-input-sample-1.txt", "utf-8");
+const data = fs.readFileSync("day12-1-input.txt", "utf-8");
 const lines = data.split("\n");
 
 // Took help
@@ -37,7 +37,6 @@ const countArrangements = (pattern, springs) => {
       } else if (operational && !springs[j]) {
         sum += dp[i + 1][j + 1] + dp[i + 1][j];
       }
-      if (i == n - 1) console.log(sum);
       dp[i][j] = sum;
     }
   }
@@ -58,4 +57,4 @@ for (const l of lines) {
   }
   sum += countArrangements("." + pattern + ".", bool_seq);
 }
-// console.log(sum);
+console.log(sum);
