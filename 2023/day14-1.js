@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const data = fs.readFileSync("day14-1-input.txt", "utf-8");
+const data = fs.readFileSync("day14-1-input-sample.txt", "utf-8");
 const lines = data.split("\n");
 
 const grid = [];
