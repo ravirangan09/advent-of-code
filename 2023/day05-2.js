@@ -8,9 +8,14 @@ const getLocationForSeedRange = (seed_start, seed_range, maps) => {
   for (let mi = 0; mi < maps.length; mi++) {
     const m = maps[mi];
     // console.log(m);
+    let unchecked = false;
     for (const [dest, source, range] of m) {
       // console.log(dest, source, range, match);
       if (match_start >= source && match_start < source + range) {
+        if (unchecked) {
+          console.log("unchecked handled");
+          unchecked = false;
+        }
         //check if range is all within or split up
         if (match_start + match_range <= source + range) {
           // console.log("**found within**", range, match_range);
@@ -25,8 +30,13 @@ const getLocationForSeedRange = (seed_start, seed_range, maps) => {
           queue.push([new_match_start, new_match_range, maps.slice(mi)]);
         }
         break;
+      } else {
+        if (seed_start < source && seed_start + seed_range > source) {
+          unchecked = true;
+        }
       }
     }
+    if (unchecked) console.log("did not handle unchecked");
     // console.log("match ", is_found, match_start, match_range);
   }
   return match_start;
@@ -65,8 +75,8 @@ for (i = 0; i < seeds.length; i += 2) {
 let min_loc = Infinity;
 while (true) {
   if (queue.length == 0) break;
-  console.log("q ", queue.length);
-  const [seed_start = null, seed_range, maps] = queue.shift();
+  //console.log("q ", queue.length);
+  const [seed_start, seed_range, maps] = queue.shift();
   const r = getLocationForSeedRange(seed_start, seed_range, maps);
   if (r < min_loc) min_loc = r;
 }
