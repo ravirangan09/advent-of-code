@@ -18,14 +18,14 @@ const lookup = { 0: "R", 1: "D", 2: "L", 3: "U" };
 let row = 0;
 let col = 0;
 const points = [[row, col]];
-let perimeter = 0;
+let boundary_count = 0;
 for (let i = 0; i < lines.length; i++) {
   let color = lines[i].split(" ")[2];
 
   const hexStr = "0x" + color.slice(2, 7);
   const count = +hexStr;
   const dir = lookup[color[7]];
-  perimeter += count;
+  boundary_count += count;
   switch (dir) {
     case "R":
       points.push([row, col + count]); //end
@@ -46,5 +46,7 @@ for (let i = 0; i < lines.length; i++) {
   } // end switch
 }
 
-const area = polygonArea(points) + perimeter / 2 + 1; //need to figure out where this formula came from
-console.log(area);
+//Picks theorem, caculate internal points from area
+const internal_count = polygonArea(points) - Math.floor(boundary_count) / 2 + 1;
+//then add boundary points beacuse of 1m x 1m box
+console.log(internal_count + boundary_count);
