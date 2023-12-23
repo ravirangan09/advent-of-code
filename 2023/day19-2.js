@@ -2,7 +2,7 @@ const fs = require("fs");
 const data = fs.readFileSync("day19-1-input.txt", "utf-8");
 const lines = data.split("\n");
 
-//c oncept taken from
+// concept taken from
 // https://github.com/shahata/adventofcode-solver/blob/master/src/2023/day19.js
 
 //process rules
