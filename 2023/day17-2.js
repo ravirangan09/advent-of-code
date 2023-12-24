@@ -80,7 +80,7 @@ function getShortestPath(grid) {
 }
 
 const fs = require("fs");
-const data = fs.readFileSync("day17-1-input.txt", "utf-8");
+const data = fs.readFileSync("day17-1-input-sample.txt", "utf-8");
 const grid = data.split("\n").map((line) => line.split("").map(Number));
 
 console.log(getShortestPath(grid));
