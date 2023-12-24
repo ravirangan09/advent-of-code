@@ -9,35 +9,55 @@ const getAdjacentNodes = (current, grid) => {
   const next = [];
   if (current.d == "up" || current.d == "down") {
     let w = 0;
-    for (i = 0; i < 3; i++) {
+    for (let i = 0; i < 3; i++) {
+      if (current.x - i > 0) {
+        w += grid[current.x - 1 - i][current.y];
+      }
+    }
+    for (i = 3; i < 10; i++) {
       if (current.x - i > 0) {
         w += grid[current.x - 1 - i][current.y];
         next.push({ d: "left", s: i, x: current.x - 1 - i, y: current.y, w });
-      }
+      } else break;
     }
     w = 0;
-    for (i = 0; i < 3; i++) {
+    for (let i = 0; i < 3; i++) {
+      if (current.x + i < grid[0].length - 1) {
+        w += grid[current.x + 1 + i][current.y];
+      }
+    }
+    for (i = 3; i < 10; i++) {
       if (current.x + i < grid[0].length - 1) {
         w += grid[current.x + 1 + i][current.y];
         next.push({ d: "right", s: i, x: current.x + 1 + i, y: current.y, w });
-      }
+      } else break;
     }
   }
 
   if (current.d == "left" || current.d == "right") {
     let w = 0;
-    for (i = 0; i < 3; i++) {
+    for (let i = 0; i < 3; i++) {
+      if (current.y - i > 0) {
+        w += grid[current.x][current.y - 1 - i];
+      }
+    }
+    for (i = 3; i < 10; i++) {
       if (current.y - i > 0) {
         w += grid[current.x][current.y - 1 - i];
         next.push({ d: "up", s: i, x: current.x, y: current.y - 1 - i, w });
-      }
+      } else break;
     }
     w = 0;
-    for (i = 0; i < 3; i++) {
+    for (let i = 0; i < 3; i++) {
+      if (current.y + i < grid.length - 1) {
+        w += grid[current.x][current.y + 1 + i];
+      }
+    }
+    for (i = 3; i < 10; i++) {
       if (current.y + i < grid.length - 1) {
         w += grid[current.x][current.y + 1 + i];
         next.push({ d: "down", s: i, x: current.x, y: current.y + 1 + i, w });
-      }
+      } else break;
     }
   }
   return next;
@@ -80,7 +100,7 @@ function getShortestPath(grid) {
 }
 
 const fs = require("fs");
-const data = fs.readFileSync("day17-1-input-sample.txt", "utf-8");
+const data = fs.readFileSync("day17-1-input.txt", "utf-8");
 const grid = data.split("\n").map((line) => line.split("").map(Number));
 
 console.log(getShortestPath(grid));
