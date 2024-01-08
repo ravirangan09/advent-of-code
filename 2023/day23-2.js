@@ -1,5 +1,5 @@
 const fs = require("fs");
-const data = fs.readFileSync("day23-1-input-sample.txt", "utf-8");
+const data = fs.readFileSync("day23-1-input.txt", "utf-8");
 const grid = data.split("\n").map((line) => line.split(""));
 const max_x = grid[0].length - 1;
 const max_y = grid.length - 1;
@@ -41,33 +41,13 @@ const getLargestPath = (x, y, visited) => {
     return;
   }
 
-  let nx = x;
-  let ny = y;
-  const c = grid[y][x];
-  switch (c) {
-    case ">":
-      nx = x + 1;
-      break;
-    case "<":
-      nx = x - 1;
-      break;
-    case "^":
-      ny = y - 1;
-      break;
-    case "v":
-      ny = y + 1;
-      break;
-  }
-  if (visited.has(key(nx, ny))) return; //incase of reverse path
   visited.add(key(x, y));
-  if (visited != ".") visited.add(key(nx, ny));
-  const next_a = getNext(nx, ny, visited);
+  const next_a = getNext(x, y, visited);
   if (next_a.length > 0) {
     for (let i = 0; i < next_a.length; i++) {
       getLargestPath(...next_a[i], visited);
     }
   }
-  if (c != ".") visited.delete(key(nx, ny));
   visited.delete(key(x, y));
 };
 

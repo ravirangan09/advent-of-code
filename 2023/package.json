@@ -2,6 +2,7 @@
   "dependencies": {
     "@datastructures-js/priority-queue": "^6.3.0",
     "compute-lcm": "^1.1.2",
+    "minimum-cut": "^1.0.2",
     "point-in-polygon-hao": "^1.1.0"
   }
 }
