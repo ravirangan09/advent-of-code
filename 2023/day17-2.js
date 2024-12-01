@@ -80,7 +80,10 @@ function getShortestPath(grid) {
   // let i = 0;
   while (queue.size() > 0) {
     const current = queue.dequeue();
-    if (visited.has(key(current))) continue;
+    if (visited.has(key(current))) {
+      console.log("visited");
+      continue;
+    }
     visited.set(key(current), true);
     const adjNodes = getAdjacentNodes(current, grid);
     adjNodes.forEach((n) => {
