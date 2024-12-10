@@ -1,6 +1,6 @@
 const FS = require("node:fs");
 
-const data = FS.readFileSync("day06-input.txt", "utf-8");
+const data = FS.readFileSync("day06-sample-1.txt", "utf-8");
 const cArray = data.split("\n").map((l) => l.split(""));
 
 // console.log(cArray);
@@ -52,8 +52,8 @@ const canMove = () => {
       ndir = "down";
       break;
   }
-  if (cArray[nr][nc] == "#") dir = ndir;
-  return true;
+  if (cArray[nr][nc] == "#") return ndir;
+  return dir;
 };
 
 const moveNext = () => {
@@ -73,35 +73,19 @@ const moveNext = () => {
   }
 };
 
-const doInitialWalk = () => {
-  cr = sr;
-  cc = sc;
-  while (true) {
-    const key = cr + ":" + cc + ":" + dir;
-    if (!visited.includes(key)) {
-      visited.push(key);
-    }
-    if (!canMove()) break;
-    moveNext();
-  }
-};
-
 const doWalk = (walked) => {
   cr = sr;
   cc = sc;
-  const key = cr + ":" + cc + ":" + dir;
-
-  let v = [key];
   while (true) {
-    if (!canMove()) return false;
-    moveNext();
     const key = cr + ":" + cc + ":" + dir;
-    if (walked.includes(key)) {
-      return true;
+    if (!walked.includes(key)) {
+      walked.push(key);
     } else {
-      if (v.includes(key)) return false; //internal loop
-      v.push(key);
+      return true;
     }
+    const ndir = canMove();
+    if (!ndir) break;
+    dir = ndir;
   }
 };
 
@@ -109,21 +93,15 @@ setStartPos();
 doInitialWalk();
 let count = 0;
 for (let i = 2; i < visited.length; i++) {
-  //start from before newly placed obstruction
-  const [r1, c1, d1] = visited[i - 1].split(":");
-  sr = parseInt(r1);
-  sc = parseInt(c1);
-  dir = d1;
-  const [r0, c0, d0] = visited[i].split(":");
+  dir = "up";
+  const [r0, c0] = visited[i].split(":");
   const or = parseInt(r0);
   const oc = parseInt(c0);
 
   cArray[or][oc] = "#";
-  const walked = visited.slice(0, i - 1);
-  console.log("st1");
+  const walked = [];
   if (doWalk(walked)) {
     count++;
-    console.log("loop ", or, oc);
   }
   cArray[or][oc] = "."; //reset to prev value
 }
