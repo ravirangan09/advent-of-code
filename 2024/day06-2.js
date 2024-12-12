@@ -1,6 +1,6 @@
 const FS = require("node:fs");
 
-const data = FS.readFileSync("day06-sample-1.txt", "utf-8");
+const data = FS.readFileSync("day06-input.txt", "utf-8");
 const cArray = data.split("\n").map((l) => l.split(""));
 
 // console.log(cArray);
@@ -9,11 +9,8 @@ let cr = 0;
 let cc = 0;
 let sr = 0;
 let sc = 0;
-const route = [];
-let steps = 0;
+
 let dir = "up";
-let visited = [];
-const dirKeys = {};
 
 const setStartPos = () => {
   for (let row = 0; row < cArray.length; row++) {
@@ -73,34 +70,60 @@ const moveNext = () => {
   }
 };
 
-const doWalk = (walked) => {
+const doInitialWalk = () => {
+  const visited = [];
   cr = sr;
   cc = sc;
   while (true) {
-    const key = cr + ":" + cc + ":" + dir;
-    if (!walked.includes(key)) {
-      walked.push(key);
-    } else {
-      return true;
+    const key = cr + ":" + cc;
+    if (!visited.includes(key)) {
+      visited.push(key);
     }
     const ndir = canMove();
     if (!ndir) break;
     dir = ndir;
+    moveNext();
   }
+  return visited;
+};
+
+const doWalk = (iter) => {
+  cr = sr;
+  cc = sc;
+  const turns = [];
+  let retCode = false;
+  while (true) {
+    const ndir = canMove();
+    if (!ndir) {
+      break;
+    }
+    if (dir != ndir) {
+      dir = ndir;
+      const key = cr + ":" + cc + ":" + dir;
+      if (turns.includes(key)) {
+        retCode = true;
+        break;
+      }
+      turns.push(key);
+    }
+    moveNext();
+  }
+  console.log(iter, turns);
+  return retCode;
 };
 
 setStartPos();
-doInitialWalk();
+const visited = doInitialWalk();
 let count = 0;
-for (let i = 2; i < visited.length; i++) {
+
+for (let i = 1; i < visited.length; i++) {
   dir = "up";
   const [r0, c0] = visited[i].split(":");
   const or = parseInt(r0);
   const oc = parseInt(c0);
 
   cArray[or][oc] = "#";
-  const walked = [];
-  if (doWalk(walked)) {
+  if (doWalk(i)) {
     count++;
   }
   cArray[or][oc] = "."; //reset to prev value
