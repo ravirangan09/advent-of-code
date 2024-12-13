@@ -1,16 +1,22 @@
 const FS = require("node:fs");
 
-const data = FS.readFileSync("day12-sample-5.txt", "utf-8");
+const data = FS.readFileSync("day12-input.txt", "utf-8");
 const cArray = data.split("\n").map((l) => l.split(""));
 
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 const getLineNames = (row, col) => {
   return [
-    row + ":" + col + ":" + row + ":" + (col + 1),
-    row + ":" + (col + 1) + ":" + (row + 1) + ":" + (col + 1),
-    row + 1 + ":" + col + ":" + (row + 1) + ":" + (col + 1),
-    row + ":" + col + ":" + (row + 1) + ":" + col,
+    { lbl: row + ":" + col + ":" + row + ":" + (col + 1), dir: "top" },
+    {
+      lbl: row + ":" + (col + 1) + ":" + (row + 1) + ":" + (col + 1),
+      dir: "right",
+    },
+    {
+      lbl: row + 1 + ":" + col + ":" + (row + 1) + ":" + (col + 1),
+      dir: "bottom",
+    },
+    { lbl: row + ":" + col + ":" + (row + 1) + ":" + col, dir: "left" },
   ];
 };
 
@@ -26,7 +32,7 @@ const setRegions = (c) => {
           const mergeRegionArray = [];
           const la = getLineNames(row, col);
           regions.forEach((r, i) => {
-            if (la.some((l) => r.lines.includes(l))) {
+            if (la.some((l) => r.lines.find((line) => line.lbl == l.lbl))) {
               mergeRegionArray.push(i);
             }
           });
@@ -55,10 +61,10 @@ const setRegions = (c) => {
     }
   }
   regions.forEach((r) => {
-    r.lines.sort((a, b) => a.localeCompare(b));
+    r.lines.sort((a, b) => a.lbl.localeCompare(b.lbl));
     const v = r.lines.filter((l, i, a) => {
-      if (i > 0 && l == a[i - 1]) return false;
-      if (i < a.length - 1 && l == a[i + 1]) return false;
+      if (i > 0 && l.lbl == a[i - 1].lbl) return false;
+      if (i < a.length - 1 && l.lbl == a[i + 1].lbl) return false;
       return true;
     });
     r.lines = v;
@@ -66,48 +72,59 @@ const setRegions = (c) => {
   return regions;
 };
 
-const allRegions = [];
-for (const c of chars) {
-  allRegions.push(...setRegions(c));
-}
-
 const countLines = (r) => {
-  const la = r.lines.map((l) => l.split(":").map((s) => parseInt(s)));
-  //need rework
-  const hl = la
-    .filter((l) => l[0] == l[2])
-    .sort((a, b) => (a[0] == b[0] ? a[1] - b[1] : a[0] - b[0]));
+  r.lines.forEach((l) => (l.vrt = l.lbl.split(":").map((s) => parseInt(s))));
+
+  const hl = r.lines
+    .filter((l) => l.vrt[0] == l.vrt[2])
+    .sort((a, b) =>
+      a.vrt[0] == b.vrt[0] ? a.vrt[1] - b.vrt[1] : a.vrt[0] - b.vrt[0]
+    );
 
   let hcount = 1;
   let hprev = hl[0];
-  if (r.c == "C") console.log(hl);
   for (let i = 1; i < hl.length; i++) {
     const hc = hl[i];
-    if (hc[0] != hprev[0] || hc[1] != hprev[1] + 1) {
+    if (
+      hc.dir != hprev.dir ||
+      hc.vrt[0] != hprev.vrt[0] ||
+      hc.vrt[1] != hprev.vrt[1] + 1
+    ) {
       hcount++;
     }
     hprev = hl[i];
   }
 
-  const vl = la
-    .filter((l) => l[1] == l[3])
-    .sort((a, b) => (a[1] == b[1] ? a[0] - b[0] : a[1] - b[1]));
+  const vl = r.lines
+    .filter((l) => l.vrt[1] == l.vrt[3])
+    .sort((a, b) =>
+      a.vrt[1] == b.vrt[1] ? a.vrt[0] - b.vrt[2] : a.vrt[1] - b.vrt[3]
+    );
 
   let vcount = 1;
   let vprev = vl[0];
   for (let i = 1; i < vl.length; i++) {
     const vc = vl[i];
-    if (vc[1] != vprev[1] || vc[0] != vprev[0] + 1) {
+    if (
+      vc.dir != vprev.dir ||
+      vc.vrt[1] != vprev.vrt[3] ||
+      vc.vrt[0] != vprev.vrt[0] + 1
+    ) {
       vcount++;
     }
     vprev = vl[i];
   }
-  console.log(hcount, vcount);
+
+  // console.log(r.c, hcount, vcount);
   r.lc = hcount + vcount;
 };
+
+const allRegions = [];
+for (const c of chars) {
+  allRegions.push(...setRegions(c));
+}
 
 for (const r of allRegions) {
   countLines(r);
 }
-// console.log(allRegions);
 console.log(allRegions.reduce((a, r) => a + r.count * r.lc, 0));
