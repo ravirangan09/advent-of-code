@@ -1,6 +1,6 @@
 const FS = require("node:fs");
 
-const lines = FS.readFileSync("day08-sample.txt", "utf-8");
+const lines = FS.readFileSync("day08-input.txt", "utf-8");
 const data = lines
   .split("\n")
   .filter((l) => l.length)
@@ -19,11 +19,11 @@ for (let i = 0; i < pointCount - 1; i++) {
   }
 }
 
-const shortestArray = distanceArray.sort((a, b) => a.d - b.d).slice(0, 10);
-console.log(shortestArray);
+const shortestArray = distanceArray.sort((a, b) => a.d - b.d);
 
 const circuits = [];
 const lookup = new Map();
+let lastCircuit = null;
 for (const c of shortestArray) {
   if (lookup.has(c.i)) {
     if (lookup.has(c.j)) {
@@ -37,12 +37,22 @@ for (const c of shortestArray) {
         iSet.add(v);
         lookup.set(v, iIndex);
       }
+      if (iSet.size == pointCount) {
+        console.log("done ", c);
+        lastCircuit = c;
+        break;
+      }
       //kill j circuit
       circuits[jIndex] = null;
     } else {
       const index = lookup.get(c.i);
       circuits[index].add(c.j);
       lookup.set(c.j, index);
+      if (circuits[index].size == pointCount) {
+        console.log("done ", c);
+        lastCircuit = c;
+        break;
+      }
     }
   } else {
     //c.i not present
@@ -53,6 +63,11 @@ for (const c of shortestArray) {
 
       circuits[index].add(c.i);
       lookup.set(c.i, index);
+      if (circuits[index].size == pointCount) {
+        console.log("done ", c);
+        lastCircuit = c;
+        break;
+      }
     } else {
       //both not present, add new circuit
       const index = circuits.length;
@@ -63,8 +78,11 @@ for (const c of shortestArray) {
   }
 }
 
-const sizes = circuits
-  .filter((s) => s !== null)
-  .map((s) => s.size)
-  .sort((a, b) => b - a);
-console.log(sizes[0] * sizes[1] * sizes[2]);
+const x1 = data[lastCircuit.i][0];
+const x2 = data[lastCircuit.j][0];
+console.log(x1 * x2);
+// const sizes = circuits
+//   .filter((s) => s !== null)
+//   .map((s) => s.size)
+//   .sort((a, b) => b - a);
+// console.log(sizes[0] * sizes[1] * sizes[2]);
